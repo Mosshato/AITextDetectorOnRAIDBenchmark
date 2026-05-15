@@ -1,0 +1,124 @@
+
+🔷 PIPELINE COMPLET (baseline + RADAR ready)
+🔹 PASUL 1 — DATASET & CORPUSURI
+Ai deja:
+H → human
+M → AI original
+P → AI paraphrased
+Ce faci aici:
+verifici că:
+H = doar human
+M = doar AI + attack = none
+P = attack = paraphrase
+elimini:
+texte goale
+NaN în generation, source_id, domain
+păstrezi coloanele:
+generation, source_id, domain, model, attack
+👉 generation = singurul input real pentru model
+🔹 PASUL 3 — SPLIT CORECT (CRITIC)
+NU faci:
+random split pe rânduri
+FACI:
+split pe source_id
+Procedură:
+iei toate source_id
+le împarți:
+70% train
+15% val
+15% test
+filtrezi:
+H_train, M_train, P_train
+H_val,   M_val,   P_val
+H_test,  M_test,  P_test
+🔹 PASUL 4 — CONSTRUIRE DATASET FINAL
+Construiești 3 dataframe-uri:
+🧠 train_df
+Exp 1:
+H_train + M_train
+Exp 2:
+H_train + M_train + P_train
+🧪 val_df
+H_val + M_val (+ P_val)
+🧪 test_df (nu e doar unul!)
+Ai 2 test sets:
+test_standard = H_test + M_test
+test_paraphrase = H_test + P_test
+🔹 PASUL 5 — LABELING
+H → 1
+M → 0
+P → 0
+🔹 PASUL 6 — TOKENIZARE
+Input:
+generation
+Transformi în:
+tokens (input_ids, attention_mask)
+Setări:
+max_length = 256 (start)
+truncation = TRUE
+padding = TRUE
+🔹 PASUL 7 — MODEL
+Folosești:
+RoBERTa-base
+Arhitectură:
+Text → Transformer → CLS → Linear → Softmax(2)
+🔹 PASUL 8 — TRAINING
+Pentru fiecare batch:
+forward:
+text → model → logits
+loss:
+CrossEntropy(logits, label)
+backprop:
+update weights
+Hyperparameters:
+lr = 2e-5
+batch size = 16–32
+epochs = 3–5
+optimizer = AdamW
+warmup = 5–10%
+🔹 PASUL 9 — VALIDARE
+La fiecare epoch:
+calculezi pe val_df:
+AUROC (principal)
+F1
+loss
+Early stopping:
+dacă AUROC nu mai crește → STOP
+🔹 PASUL 10 — TESTARE FINALĂ
+1️⃣ Test standard
+H vs M
+2️⃣ Test paraphrase
+H vs P
+Ce vrei să vezi:
+Test
+Interpretare
+H vs M
+detectare basic
+H vs P
+robustețe reală
+🔹 PASUL 11 — ANALIZĂ
+NU te uiți doar la scor global.
+Analizezi:
+📊 pe domain:
+news vs books vs poetry
+📊 pe model:
+gpt4 vs llama vs mistral
+📊 pe attack:
+paraphrase
+🔹 PASUL 12 — OUTPUT FINAL
+Modelul dă:
+p_human
+Tu convertești:
+AI% = (1 - p_human) * 100
+🔹 PASUL 13 — COMPARAȚIE EXPERIMENTE
+Exp 1: H + M
+→ baseline simplu
+Exp 2: H + M + P
+→ robust
+Compari:
+AUROC(H vs P)
+👉 aici trebuie să crească
+🔹 PASUL 14 — (OPȚIONAL) CALIBRARE
+Dacă vrei % real:
+temperature scaling
+calibration curve
