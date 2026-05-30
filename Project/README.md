@@ -77,7 +77,7 @@ Final datasets assembled:
 | `test_paraphrase` | H_test + P_test |
 
 ### 5. Stratified Sampling (Kaggle notebook)
-50,000 samples per class, stratified by `domain` (and `model` for AI corpora), ensuring balanced domain coverage across GPT-4, LLaMA, Mistral, MPT, Cohere, GPT-2/3 variants.
+50,000 samples per class, stratified by `domain` (and `model` for AI corpora), ensuring balanced domain coverage across GPT-4, LLaMA, Mistral, MPT, Cohere, GPT-2/3 ,etc variants.
 
 ---
 
@@ -222,46 +222,7 @@ Open `ai-text-detector/Tests/trainrobertaaitextdetector.ipynb` in a Kaggle noteb
 Open `ai-text-detector/Tests/testrobertamodel.ipynb` in a Kaggle notebook.
 
 ---
-
-## Folder Structure
-
-```
-AITextDetectorOnRAIDBenchmark/
-├── ai-text-detector/
-│   ├── model/                          # Trained model weights & tokenizer
-│   │   ├── config.json
-│   │   ├── model.safetensors           # RoBERTa fine-tuned weights
-│   │   ├── tokenizer.json
-│   │   └── tokenizer_config.json
-│   └── Tests/
-│       ├── trainrobertaaitextdetector.ipynb   # Full training notebook (Kaggle/T4)
-│       ├── testrobertamodel.ipynb             # RAID benchmark evaluation
-│       ├── dataSetModel.py                    # Batched inference utility
-│       ├── checkGPU.py                        # GPU availability check
-│       ├── confusion_matrix.png               # Confusion matrix visualization
-│       ├── predictions.json                   # RAID benchmark predictions
-│       ├── Data/
-│       │   ├── dataset.csv                    # Balanced test dataset (AI + Human)
-│       │   └── utilsTestDataset.py            # Test dataset builder
-│       ├── model/                             # Local model copy for testing
-│       └── raid/                              # RAID benchmark submodule
-├── ETL/
-│   ├── run.py                                 # Pipeline entry point
-│   ├── pipeline.txt                           # Pipeline documentation
-│   └── src/
-│       ├── parquet_to_csv.py                  # Convert parquet corpora to CSV
-│       ├── transform.py                       # Data cleaning & dataset builder
-│       ├── split.py                           # Source-ID-based train/val/test split
-│       └── utils.py                           # Column distribution analysis
-├── 2307.03838v2.pdf                           # RAID benchmark paper
-├── .gitignore
-└── README.md
-```
-
----
-
 ## References
 
 - RAID Benchmark: https://raid-bench.xyz/
 - Base model: `roberta-base` (Liu et al., 2019)
-- Model on HuggingFace: https://huggingface.co/Mosshato/ai-text-detector
